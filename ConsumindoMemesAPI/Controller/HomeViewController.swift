@@ -1,5 +1,5 @@
 //
-//  SplashViewController.swift
+//  HomeViewController.swift
 //  ConsumindoMemesAPI
 //
 //  Created by Jean Ramalho on 19/02/25.
@@ -7,16 +7,13 @@
 import Foundation
 import UIKit
 
-class SplashViewController: UIViewController {
+class HomeViewController: UIViewController {
     
-    let contentView: MemesAPISplashView
-    let coordinator: CoordinatorProtocol?
+    let contentView: HomeView
     
-    init(contentView: MemesAPISplashView, coordinator: CoordinatorProtocol) {
+    init(contentView: HomeView) {
         self.contentView = contentView
-        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
-   
     }
     
     required init?(coder: NSCoder) {
@@ -30,13 +27,15 @@ class SplashViewController: UIViewController {
     
     private func setup(){
         
-        startTimer()
+        contentView.memesTableView.delegate = self
+        contentView.memesTableView.dataSource = self
+        
         setHierarchy()
         setConstraints()
     }
     
     private func setHierarchy(){
-        self.view.addSubview(contentView)
+        view.addSubview(contentView)
     }
     
     private func setConstraints(){
@@ -46,14 +45,22 @@ class SplashViewController: UIViewController {
             contentView.topAnchor.constraint(equalTo: view.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
-    
-    private func startTimer(){
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ) { [weak self] in
-            self?.coordinator?.showHomeView()
-            
-        }
+}
+
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MemesTableViewCell.identifier, for: indexPath) as? MemesTableViewCell else {return UITableViewCell()}
+        
+        return cell
+    }
+    
+    
 }
