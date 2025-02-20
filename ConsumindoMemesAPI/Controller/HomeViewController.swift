@@ -6,6 +6,7 @@
 //
 import Foundation
 import UIKit
+import Alamofire
 
 class HomeViewController: UIViewController {
     
@@ -26,6 +27,10 @@ class HomeViewController: UIViewController {
     }
     
     private func setup(){
+        
+        AF.request("https://api.imgflip.com/get_memes").responseJSON { response in
+            
+        }
         
         contentView.memesTableView.delegate = self
         contentView.memesTableView.dataSource = self
