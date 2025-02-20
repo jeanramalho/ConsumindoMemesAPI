@@ -12,10 +12,9 @@ class MemesTableViewCell: UITableViewCell {
     lazy var memeImageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.contentMode = .scaleAspectFill
+        image.contentMode = .scaleAspectFit
         image.layer.cornerRadius = 30
-        image.image = UIImage(systemName: "star.fill")
-        image.backgroundColor = .red
+        image.clipsToBounds = true
         return image
     }()
     
@@ -24,7 +23,6 @@ class MemesTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = .orange
-        label.text = "testando imagem".uppercased()
         label.numberOfLines = 0
         return label
     }()

@@ -35,7 +35,11 @@ class HomeViewController: UIViewController {
         
         memeService.getRequestMemes { response, error in
             if response {
-                self.contentView.memesTableView.reloadData()
+                
+                // Garanta que a UI seja atualizada na thread principal
+                     DispatchQueue.main.async {
+                         self.contentView.memesTableView.reloadData()
+                     }
             } else {
                 print(error ?? "Erro ao realizar request")
             }
@@ -73,7 +77,20 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MemesTableViewCell.identifier, for: indexPath) as? MemesTableViewCell else {return UITableViewCell()}
         
-        cell.memeTitleLabel.text = self.memeService.getMemeNames(indexPath: indexPath)
+        // 1️⃣ Define o título do meme
+        cell.memeTitleLabel.text = self.memeService.getMemeNames(indexPath: indexPath).uppercased()
+        
+        // 2️⃣ Configura uma imagem temporária para evitar imagens erradas ao reciclar células
+           cell.memeImageView.image = UIImage(systemName: "photo")
+
+        // 3️⃣ Busca a imagem da API
+         self.memeService.fetchMemeImage(indexPath: indexPath) { image in
+             DispatchQueue.main.async { // ⬇️ Atualização da UI sempre na main thread
+                 if let currentIndex = tableView.indexPath(for: cell), currentIndex == indexPath {
+                     cell.memeImageView.image = image
+                 }
+             }
+         }
         
         return cell
     }
